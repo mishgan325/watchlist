@@ -10,7 +10,7 @@ import ru.mishgan325.watchlist.entities.Title;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MovieScraper {
+public class ImdbScraper {
 
     private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
 
@@ -66,9 +66,37 @@ public class MovieScraper {
         }
 
         // Получение превью URL
-        String previewUrl = doc.selectFirst("img.ipc-image").attr("src");
+        String srcset = doc.selectFirst("img.ipc-image").attr("srcset");
+        String[] sources = srcset.split(",\\s+");
+        String previewUrl = getLargestResolutionUrl(sources);
 
         // Возвращение информации в виде объекта Title
         return new Title(title, description, genres.toString(), previewUrl, url);
+    }
+
+    private static String getLargestResolutionUrl(String[] sources) {
+        String largestUrl = null;
+        int maxResolution = Integer.MIN_VALUE;
+
+        for (String source : sources) {
+            String[] parts = source.split("\\s+");
+            if (parts.length >= 2) {
+                String url = parts[0];
+                String resolutionString = parts[parts.length - 1];
+                if (resolutionString.endsWith("w")) {
+                    try {
+                        int resolution = Integer.parseInt(resolutionString.substring(0, resolutionString.length() - 1));
+                        if (resolution > maxResolution) {
+                            maxResolution = resolution;
+                            largestUrl = url;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Handle if resolution is not a valid number
+                    }
+                }
+            }
+        }
+
+        return largestUrl;
     }
 }
