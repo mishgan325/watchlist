@@ -1,6 +1,7 @@
 package ru.mishgan325.watchlist.controllers;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import ru.mishgan325.watchlist.entities.Title;
 import ru.mishgan325.watchlist.utils.JsonHandler;
@@ -43,9 +44,11 @@ public class SearchController {
             return;
         }
 
-        view.getDetailsArea().setText("Title: " + title.getTitle() +
+        TextArea details = view.getDetailsArea();
+        details.setText("Title: " + title.getTitle() +
                 "\nDescription: " + title.getDescription() +
                 "\nGenres: " + title.getGenres());
+        details.setWrapText(true);
     }
 
     public void addToWatchlist() {

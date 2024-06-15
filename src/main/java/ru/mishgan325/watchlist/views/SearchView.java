@@ -45,7 +45,9 @@ public class SearchView {
 
         listView.setCellFactory(param -> new ListCell<>() {
             private final ImageView imageView = new ImageView();
-            private final Label label = new Label();
+            private final Label titleLabel = new Label();
+            private final Label genreLabel = new Label();
+
 
             @Override
             protected void updateItem(Title item, boolean empty) {
@@ -54,9 +56,21 @@ public class SearchView {
                     setText(null);
                     setGraphic(null);
                 } else {
+                    setStyle("-fx-border-color: #b6b6b6; -fx-border-width: 0 0 0.5px 0;");
+
+
                     imageView.setImage(new Image(item.getPreviewUrl(), 50, 75, true, true));
-                    label.setText(item.getTitle());
-                    HBox hBox = new HBox(imageView, label);
+                    titleLabel.setText(item.getTitle());
+                    titleLabel.setStyle("-fx-font-weight: bold;");
+
+                    VBox vBox = new VBox();
+
+                    genreLabel.setText(item.getGenres());
+                    genreLabel.setStyle("-fx-underline: true;");
+
+                    vBox.getChildren().addAll(titleLabel, genreLabel);
+
+                    HBox hBox = new HBox(imageView, vBox);
                     hBox.setSpacing(10);
                     setGraphic(hBox);
                 }

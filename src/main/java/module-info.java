@@ -4,6 +4,7 @@ module ru.mishgan325.watchlist {
     requires javafx.fxml;
     requires com.google.gson;
     requires org.jsoup;
+    requires java.desktop;
 
     exports ru.mishgan325.watchlist;
     exports ru.mishgan325.watchlist.views;
