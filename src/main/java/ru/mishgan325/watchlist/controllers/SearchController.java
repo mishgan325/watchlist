@@ -1,16 +1,20 @@
 package ru.mishgan325.watchlist.controllers;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import ru.mishgan325.watchlist.entities.Title;
 import ru.mishgan325.watchlist.utils.JsonHandler;
-import ru.mishgan325.watchlist.utils.MovieScraper;
+import ru.mishgan325.watchlist.utils.ImdbScraper;
+import ru.mishgan325.watchlist.utils.TitleShuffler;
+import ru.mishgan325.watchlist.views.RandomTitleDialog;
 import ru.mishgan325.watchlist.views.SearchView;
 import ru.mishgan325.watchlist.views.WatchlistView;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class SearchController {
 
@@ -30,7 +34,7 @@ public class SearchController {
         }
 
         try {
-            List<Title> titles = MovieScraper.searchMovie(movieName);
+            List<Title> titles = ImdbScraper.searchMovie(movieName);
             view.getListView().getItems().clear();
             view.getListView().getItems().addAll(titles);
         } catch (IOException e) {
@@ -75,5 +79,23 @@ public class SearchController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void showRandomTitleDialog() {
+        List<Title> watchlist = JsonHandler.loadWatchlist();
+        if (watchlist.isEmpty()) {
+            showAlert("Error", "No titles available");
+            return;
+        }
+
+        Title randomTitle = TitleShuffler.getRandomTitle(watchlist);
+        RandomTitleDialog dialog = new RandomTitleDialog(randomTitle);
+        dialog.showAndWait().ifPresent(buttonType -> {
+            if (buttonType.equals(dialog.getWatchButtonType())) {
+                System.out.println("Будешь смотреть");
+            } else if (buttonType.equals(dialog.getPostponeButtonType())) {
+                System.out.println("Не будешь смотреть");
+            }
+        });
     }
 }

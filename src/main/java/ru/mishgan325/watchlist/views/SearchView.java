@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 
 import ru.mishgan325.watchlist.entities.Title;
 import ru.mishgan325.watchlist.controllers.SearchController;
+import ru.mishgan325.watchlist.utils.JsonHandler;
+
+import java.util.List;
 
 public class SearchView {
 
@@ -20,6 +23,7 @@ public class SearchView {
     private Button searchButton;
     private Button addToWatchlistButton;
     private Button openWatchlistButton;
+    private Button randomTitleButton;
 
     public SearchView(Stage primaryStage) {
         searchField = new TextField();
@@ -28,6 +32,7 @@ public class SearchView {
         searchButton = new Button("Search");
         addToWatchlistButton = new Button("Add to Watchlist");
         openWatchlistButton = new Button("Open Watchlist");
+        randomTitleButton = new Button("Random Title");
 
         listView = new ListView<>();
         detailsArea = new TextArea();
@@ -35,13 +40,14 @@ public class SearchView {
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
-        layout.getChildren().addAll(searchField, searchButton, listView, detailsArea, addToWatchlistButton, openWatchlistButton);
+        layout.getChildren().addAll(searchField, searchButton, listView, detailsArea, addToWatchlistButton, openWatchlistButton, randomTitleButton);
         view = layout;
 
         SearchController controller = new SearchController(this, primaryStage);
         searchButton.setOnAction(e -> controller.searchMovies());
         addToWatchlistButton.setOnAction(e -> controller.addToWatchlist());
         openWatchlistButton.setOnAction(e -> controller.openWatchlist());
+        randomTitleButton.setOnAction(e -> controller.showRandomTitleDialog()); // Действие для новой кнопки\
 
         listView.setCellFactory(param -> new ListCell<>() {
             private final ImageView imageView = new ImageView();

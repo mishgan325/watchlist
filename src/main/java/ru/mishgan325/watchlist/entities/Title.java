@@ -5,8 +5,8 @@ public class Title {
     private String description;
     private String previewUrl;
     private String titleUrl;
-
     private String genres;
+    private int priority = 5;
 
     public Title(String title, String description, String genres, String previewUrl, String titleUrl) {
         this.title = title;
@@ -34,5 +34,13 @@ public class Title {
 
     public String getGenres() {
         return genres;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }
