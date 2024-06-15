@@ -53,6 +53,7 @@ public class SearchView {
             private final ImageView imageView = new ImageView();
             private final Label titleLabel = new Label();
             private final Label genreLabel = new Label();
+            private final Label releaseDateLabel = new Label();
 
 
             @Override
@@ -74,8 +75,11 @@ public class SearchView {
                     genreLabel.setText(item.getGenres());
                     genreLabel.setStyle("-fx-underline: true;");
 
-                    vBox.getChildren().addAll(titleLabel, genreLabel);
+                    releaseDateLabel.setText(item.getReleaseDate());
+                    releaseDateLabel.setStyle("-fx-font-style: italic;");
 
+                    vBox.getChildren().addAll(titleLabel, genreLabel, releaseDateLabel);
+                    vBox.setSpacing(2);
                     HBox hBox = new HBox(imageView, vBox);
                     hBox.setSpacing(10);
                     setGraphic(hBox);

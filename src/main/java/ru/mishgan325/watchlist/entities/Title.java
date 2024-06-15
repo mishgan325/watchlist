@@ -3,17 +3,19 @@ package ru.mishgan325.watchlist.entities;
 public class Title {
     private String title;
     private String description;
+    private String releaseDate;
     private String previewUrl;
     private String titleUrl;
     private String genres;
     private int priority = 5;
 
-    public Title(String title, String description, String genres, String previewUrl, String titleUrl) {
+    public Title(String title, String description, String releaseDate, String genres, String previewUrl, String titleUrl) {
         this.title = title;
         this.description = description;
+        this.releaseDate = releaseDate;
+        this.genres = genres;
         this.previewUrl = previewUrl;
         this.titleUrl = titleUrl;
-        this.genres = genres;
     }
 
     public String getTitle() {
@@ -42,5 +44,9 @@ public class Title {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
     }
 }

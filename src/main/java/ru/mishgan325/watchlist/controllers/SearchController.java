@@ -49,9 +49,7 @@ public class SearchController {
         }
 
         TextArea details = view.getDetailsArea();
-        details.setText("Title: " + title.getTitle() +
-                "\nDescription: " + title.getDescription() +
-                "\nGenres: " + title.getGenres());
+        details.setText(title.getDescription());
         details.setWrapText(true);
     }
 

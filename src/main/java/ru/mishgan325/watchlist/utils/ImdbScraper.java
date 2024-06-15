@@ -21,12 +21,13 @@ public class ImdbScraper {
         Elements movieElements = doc.select("section[data-testid='find-results-section-title'] li.ipc-metadata-list-summary-item");
 
         for (Element movieElement : movieElements) {
-            String title = movieElement.select("a.ipc-metadata-list-summary-item__t").text();
+            String releaseDate = movieElement.selectFirst("span.ipc-metadata-list-summary-item__li").text().trim();
+
             String movieURL = "https://www.imdb.com" + movieElement.select("a.ipc-metadata-list-summary-item__t").attr("href");
             movieURL = removeRef(movieURL);
 
 
-            result.add(getMovieDetails(movieURL));
+            result.add(getMovieDetails(movieURL, releaseDate));
         }
 
         return result;
@@ -40,7 +41,7 @@ public class ImdbScraper {
         return url;
     }
 
-    public static Title getMovieDetails(String url) throws IOException {
+    public static Title getMovieDetails(String url, String releaseDate) throws IOException {
         Document doc = Jsoup.connect(url).get();
 
         // Получение названия
@@ -71,7 +72,7 @@ public class ImdbScraper {
         String previewUrl = getLargestResolutionUrl(sources);
 
         // Возвращение информации в виде объекта Title
-        return new Title(title, description, genres.toString(), previewUrl, url);
+        return new Title(title, description, releaseDate, genres.toString(), previewUrl, url);
     }
 
     private static String getLargestResolutionUrl(String[] sources) {
