@@ -1,9 +1,11 @@
-package ru.mishgan325.watchlist;
+package ru.mishgan325.watchlist.utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import ru.mishgan325.watchlist.entities.Title;
 
 import java.io.IOException;
 import java.util.ArrayList;

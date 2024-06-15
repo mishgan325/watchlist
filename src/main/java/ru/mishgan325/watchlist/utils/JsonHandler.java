@@ -1,8 +1,10 @@
-package ru.mishgan325.watchlist;
+package ru.mishgan325.watchlist.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import ru.mishgan325.watchlist.entities.Title;
 
 import java.io.*;
 import java.lang.reflect.Type;

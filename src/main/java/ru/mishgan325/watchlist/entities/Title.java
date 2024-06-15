@@ -1,4 +1,5 @@
-package ru.mishgan325.watchlist;
+package ru.mishgan325.watchlist.entities;
+
 public class Title {
     private String title;
     private String description;
