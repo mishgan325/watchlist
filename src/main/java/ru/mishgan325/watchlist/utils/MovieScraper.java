@@ -24,9 +24,9 @@ public class MovieScraper {
             String title = movieElement.select("a.ipc-metadata-list-summary-item__t").text();
             String movieURL = "https://www.imdb.com" + movieElement.select("a.ipc-metadata-list-summary-item__t").attr("href");
             movieURL = removeRef(movieURL);
-            String imageURL = movieElement.select("img.ipc-image").attr("src");
 
-            result.add(new Title(title, "", "", imageURL, movieURL));
+
+            result.add(getMovieDetails(movieURL));
         }
 
         return result;

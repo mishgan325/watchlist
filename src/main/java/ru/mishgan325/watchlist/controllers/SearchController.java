@@ -43,15 +43,9 @@ public class SearchController {
             return;
         }
 
-        try {
-            Title detailedTitle = MovieScraper.getMovieDetails(title.getTitleUrl());
-            view.getDetailsArea().setText("Title: " + detailedTitle.getTitle() +
-                    "\nDescription: " + detailedTitle.getDescription() +
-                    "\nGenres: " + detailedTitle.getGenres());
-        } catch (IOException e) {
-            showAlert("Error", "Failed to get movie details");
-            e.printStackTrace();
-        }
+        view.getDetailsArea().setText("Title: " + title.getTitle() +
+                "\nDescription: " + title.getDescription() +
+                "\nGenres: " + title.getGenres());
     }
 
     public void addToWatchlist() {

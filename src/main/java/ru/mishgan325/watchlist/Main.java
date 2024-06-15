@@ -13,7 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Movie Searcher");
+        primaryStage.setTitle("Movie smart watchlist");
 
         SearchView searchView = new SearchView(primaryStage);
         Scene scene = new Scene(searchView.getView(), 500, 600);

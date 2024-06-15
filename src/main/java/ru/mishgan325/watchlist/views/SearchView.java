@@ -2,6 +2,9 @@ package ru.mishgan325.watchlist.views;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -39,6 +42,26 @@ public class SearchView {
         searchButton.setOnAction(e -> controller.searchMovies());
         addToWatchlistButton.setOnAction(e -> controller.addToWatchlist());
         openWatchlistButton.setOnAction(e -> controller.openWatchlist());
+
+        listView.setCellFactory(param -> new ListCell<>() {
+            private final ImageView imageView = new ImageView();
+            private final Label label = new Label();
+
+            @Override
+            protected void updateItem(Title item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(new Image(item.getPreviewUrl(), 50, 75, true, true));
+                    label.setText(item.getTitle());
+                    HBox hBox = new HBox(imageView, label);
+                    hBox.setSpacing(10);
+                    setGraphic(hBox);
+                }
+            }
+        });
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> controller.showDetails(newValue));
     }
 
