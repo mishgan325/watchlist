@@ -12,37 +12,8 @@ public class MovieScraper {
 
     private static final String SEARCH_URL = "https://www.imdb.com/find?q=";
 
-    public static class Movie {
-        private final String title;
-        private final String url;
-        private final String imageUrl;
-
-        public Movie(String title, String url, String imageUrl) {
-            this.title = title;
-            this.url = url;
-            this.imageUrl = imageUrl;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
-        }
-
-        @Override
-        public String toString() {
-            return title;
-        }
-    }
-
-    public static ArrayList<Movie> searchMovie(String movieName) throws IOException {
-        ArrayList<Movie> result = new ArrayList<>();
+    public static ArrayList<Title> searchMovie(String movieName) throws IOException {
+        ArrayList<Title> result = new ArrayList<>();
         String searchURL = SEARCH_URL + movieName.replace(" ", "+");
         Document doc = Jsoup.connect(searchURL).get();
         Elements movieElements = doc.select("section[data-testid='find-results-section-title'] li.ipc-metadata-list-summary-item");
@@ -53,7 +24,7 @@ public class MovieScraper {
             movieURL = removeRef(movieURL);
             String imageURL = movieElement.select("img.ipc-image").attr("src");
 
-            result.add(new Movie(title, movieURL, imageURL));
+            result.add(new Title(title, "", "", imageURL, movieURL));
         }
 
         return result;
@@ -67,7 +38,7 @@ public class MovieScraper {
         return url;
     }
 
-    public static String getMovieDetails(String url) throws IOException {
+    public static Title getMovieDetails(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
 
         // Получение названия
@@ -92,7 +63,10 @@ public class MovieScraper {
             genres.setLength(genres.length() - 2); // Удаляем лишнюю запятую и пробел
         }
 
-        // Возвращение информации
-        return "Title: " + title + "\nDescription: " + description + "\nGenres: " + genres.toString();
+        // Получение превью URL
+        String previewUrl = doc.selectFirst("img.ipc-image").attr("src");
+
+        // Возвращение информации в виде объекта Title
+        return new Title(title, description, genres.toString(), previewUrl, url);
     }
 }

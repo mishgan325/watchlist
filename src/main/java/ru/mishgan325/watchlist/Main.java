@@ -10,16 +10,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 public class Main extends Application {
 
-    private ListView<MovieScraper.Movie> listView;
+    private ListView<Title> listView;
     private TextField searchField;
     private TextArea detailsArea;
-    private static final String WATCHLIST_FILE = "watchlist.txt";
 
     public static void main(String[] args) {
         launch(args);
@@ -41,13 +39,13 @@ public class Main extends Application {
             private final Label label = new Label();
 
             @Override
-            protected void updateItem(MovieScraper.Movie item, boolean empty) {
+            protected void updateItem(Title item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    imageView.setImage(new Image(item.getImageUrl(), 50, 75, true, true));
+                    imageView.setImage(new Image(item.getPreviewUrl(), 50, 75, true, true));
                     label.setText(item.getTitle());
                     HBox hBox = new HBox(imageView, label);
                     hBox.setSpacing(10);
@@ -84,23 +82,25 @@ public class Main extends Application {
         }
 
         try {
-            ArrayList<MovieScraper.Movie> movies = MovieScraper.searchMovie(movieName);
+            List<Title> titles = MovieScraper.searchMovie(movieName);
             listView.getItems().clear();
-            listView.getItems().addAll(movies);
+            listView.getItems().addAll(titles);
         } catch (IOException e) {
             showAlert("Error", "Failed to search movies");
             e.printStackTrace();
         }
     }
 
-    private void showDetails(MovieScraper.Movie movie) {
-        if (movie == null) {
+    private void showDetails(Title title) {
+        if (title == null) {
             return;
         }
 
         try {
-            String details = MovieScraper.getMovieDetails(movie.getUrl());
-            detailsArea.setText(details);
+            Title detailedTitle = MovieScraper.getMovieDetails(title.getTitleUrl());
+            detailsArea.setText("Title: " + detailedTitle.getTitle() +
+                    "\nDescription: " + detailedTitle.getDescription() +
+                    "\nGenres: " + detailedTitle.getGenres());
         } catch (IOException e) {
             showAlert("Error", "Failed to get movie details");
             e.printStackTrace();
@@ -108,55 +108,38 @@ public class Main extends Application {
     }
 
     private void addToWatchlist() {
-        MovieScraper.Movie movie = listView.getSelectionModel().getSelectedItem();
-        if (movie == null) {
+        Title title = listView.getSelectionModel().getSelectedItem();
+        if (title == null) {
             showAlert("Error", "Please select a movie to add to watchlist");
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(WATCHLIST_FILE, true))) {
-            writer.write(movie.getTitle() + "|" + movie.getUrl() + "|" + movie.getImageUrl());
-            writer.newLine();
-            showAlert("Success", "Movie added to watchlist");
-        } catch (IOException e) {
-            showAlert("Error", "Failed to add movie to watchlist");
-            e.printStackTrace();
-        }
+        List<Title> watchlist = JsonHandler.loadWatchlist();
+        watchlist.add(title);
+        JsonHandler.saveWatchlist(watchlist);
+        showAlert("Success", "Movie added to watchlist");
     }
 
     private void openWatchlist() {
         Stage watchlistStage = new Stage();
         watchlistStage.setTitle("Watchlist");
 
-        ListView<MovieScraper.Movie> watchlistView = new ListView<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(WATCHLIST_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length == 3) {
-                    String title = parts[0];
-                    String url = parts[1];
-                    String imageUrl = parts[2];
-                    watchlistView.getItems().add(new MovieScraper.Movie(title, url, imageUrl));
-                }
-            }
-        } catch (IOException e) {
-            showAlert("Error", "Failed to load watchlist");
-            e.printStackTrace();
-        }
+        ListView<Title> watchlistView = new ListView<>();
+        List<Title> watchlist = JsonHandler.loadWatchlist();
+        watchlistView.getItems().addAll(watchlist);
 
         watchlistView.setCellFactory(param -> new ListCell<>() {
             private final ImageView imageView = new ImageView();
             private final Label label = new Label();
 
             @Override
-            protected void updateItem(MovieScraper.Movie item, boolean empty) {
+            protected void updateItem(Title item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    imageView.setImage(new Image(item.getImageUrl(), 50, 75, true, true));
+                    imageView.setImage(new Image(item.getPreviewUrl(), 50, 75, true, true));
                     label.setText(item.getTitle());
                     HBox hBox = new HBox(imageView, label);
                     hBox.setSpacing(10);
@@ -165,35 +148,13 @@ public class Main extends Application {
             }
         });
 
-        Button removeButton = new Button("Remove Selected");
-        removeButton.setOnAction(e -> {
-            MovieScraper.Movie selectedMovie = watchlistView.getSelectionModel().getSelectedItem();
-            if (selectedMovie != null) {
-                watchlistView.getItems().remove(selectedMovie);
-                saveWatchlist(watchlistView.getItems());
-            }
-        });
-
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
-        layout.getChildren().addAll(watchlistView, removeButton);
+        layout.getChildren().addAll(watchlistView);
 
-        Scene scene = new Scene(layout, 400, 500);
+        Scene scene = new Scene(layout, 500, 600);
         watchlistStage.setScene(scene);
         watchlistStage.show();
-    }
-
-    private void saveWatchlist(List<MovieScraper.Movie> watchlist) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(WATCHLIST_FILE))) {
-            for (MovieScraper.Movie movie : watchlist) {
-                writer.write(movie.getTitle() + "|" + movie.getUrl() + "|" + movie.getImageUrl());
-                writer.newLine();
-            }
-            showAlert("Success", "Watchlist updated");
-        } catch (IOException e) {
-            showAlert("Error", "Failed to save watchlist");
-            e.printStackTrace();
-        }
     }
 
     private void showAlert(String title, String message) {
