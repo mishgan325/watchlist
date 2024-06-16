@@ -20,7 +20,7 @@ public class RandomTitleDialog extends Dialog<ButtonType> {
     private final ButtonType postponeButton;
 
     public RandomTitleDialog(Title title) {
-        setTitle("Random Title");
+        setTitle("Рандомный тайтл");
 
         Label titleLabel = new Label(title.getTitle());
         titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
@@ -28,7 +28,7 @@ public class RandomTitleDialog extends Dialog<ButtonType> {
         imageView.setImage(new Image(title.getPreviewUrl(), 380, 600, true, true));
 
         // Creating a hyperlink that opens the title's URL
-        Hyperlink openLink = new Hyperlink("Open Link");
+        Hyperlink openLink = new Hyperlink("Подробнее");
         openLink.setOnAction(e -> {
             try {
                 Desktop.getDesktop().browse(new URI(title.getTitleUrl()));
@@ -42,8 +42,8 @@ public class RandomTitleDialog extends Dialog<ButtonType> {
         content.getChildren().addAll(titleLabel, imageView, openLink);
         getDialogPane().setContent(content);
 
-        watchButton = new ButtonType("Watch");
-        postponeButton = new ButtonType("Postpone");
+        watchButton = new ButtonType("Смотреть");
+        postponeButton = new ButtonType("Отложить");
 
         getDialogPane().getButtonTypes().addAll(watchButton, postponeButton);
 

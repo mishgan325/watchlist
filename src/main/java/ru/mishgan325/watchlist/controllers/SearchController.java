@@ -1,11 +1,12 @@
 package ru.mishgan325.watchlist.controllers;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import ru.mishgan325.watchlist.entities.Title;
-import ru.mishgan325.watchlist.utils.JsonHandler;
+import ru.mishgan325.watchlist.entities.WatchlistData;
+import ru.mishgan325.watchlist.utils.TitleListHelper;
+import ru.mishgan325.watchlist.utils.JsonHelper;
 import ru.mishgan325.watchlist.utils.ImdbScraper;
 import ru.mishgan325.watchlist.utils.TitleShuffler;
 import ru.mishgan325.watchlist.views.RandomTitleDialog;
@@ -14,7 +15,6 @@ import ru.mishgan325.watchlist.views.WatchlistView;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class SearchController {
 
@@ -43,6 +43,11 @@ public class SearchController {
         }
     }
 
+    public void addMovieManualy(String link) throws IOException {
+        Title title = ImdbScraper.getMovieDetails(link, "");
+        TitleListHelper.add(title);
+    }
+
     public void showDetails(Title title) {
         if (title == null) {
             return;
@@ -60,9 +65,8 @@ public class SearchController {
             return;
         }
 
-        List<Title> watchlist = JsonHandler.loadWatchlist();
-        watchlist.add(title);
-        JsonHandler.saveWatchlist(watchlist);
+        TitleListHelper.add(title);
+
         showAlert("Success", "Movie added to watchlist");
     }
 
@@ -80,13 +84,13 @@ public class SearchController {
     }
 
     public void showRandomTitleDialog() {
-        List<Title> watchlist = JsonHandler.loadWatchlist();
-        if (watchlist.isEmpty()) {
+        WatchlistData watchlistData = JsonHelper.loadWatchlist();
+        if (watchlistData.getWatchlist().isEmpty()) {
             showAlert("Error", "No titles available");
             return;
         }
 
-        Title randomTitle = TitleShuffler.getRandomTitle(watchlist);
+        Title randomTitle = TitleShuffler.getRandomTitle(watchlistData.getWatchlist());
         RandomTitleDialog dialog = new RandomTitleDialog(randomTitle);
         dialog.showAndWait().ifPresent(buttonType -> {
             if (buttonType.equals(dialog.getWatchButtonType())) {

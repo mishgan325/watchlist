@@ -9,13 +9,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.Label;
 
 import ru.mishgan325.watchlist.entities.Title;
-import ru.mishgan325.watchlist.utils.JsonHandler;
+import ru.mishgan325.watchlist.entities.WatchlistData;
+import ru.mishgan325.watchlist.utils.JsonHelper;
+import ru.mishgan325.watchlist.utils.TitleListHelper;
 import ru.mishgan325.watchlist.views.WatchlistView;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.WeakHashMap;
 
 public class WatchlistController {
 
@@ -26,8 +29,8 @@ public class WatchlistController {
     }
 
     public void loadWatchlist() {
-        List<Title> watchlist = JsonHandler.loadWatchlist();
-        view.getListView().getItems().addAll(watchlist);
+        WatchlistData watchlistData = JsonHelper.loadWatchlist();
+        view.getListView().getItems().addAll(watchlistData.getWatchlist());
 
         view.getListView().setCellFactory(param -> new ListCell<>() {
             private final ImageView imageView = new ImageView();
@@ -71,9 +74,7 @@ public class WatchlistController {
         Title selectedTitle = view.getListView().getSelectionModel().getSelectedItem();
         if (selectedTitle != null) {
             view.getListView().getItems().remove(selectedTitle);
-            List<Title> watchlist = JsonHandler.loadWatchlist();
-            watchlist.remove(selectedTitle);
-            JsonHandler.saveWatchlist(watchlist);
+            TitleListHelper.remove(selectedTitle);
         } else {
             showAlert("Error", "Please select a title to delete.");
         }

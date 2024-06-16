@@ -10,9 +10,6 @@ import javafx.stage.Stage;
 
 import ru.mishgan325.watchlist.entities.Title;
 import ru.mishgan325.watchlist.controllers.SearchController;
-import ru.mishgan325.watchlist.utils.JsonHandler;
-
-import java.util.List;
 
 public class SearchView {
 
@@ -27,12 +24,12 @@ public class SearchView {
 
     public SearchView(Stage primaryStage) {
         searchField = new TextField();
-        searchField.setPromptText("Enter movie name");
+        searchField.setPromptText("Введите тайтл для поиска");
 
-        searchButton = new Button("Search");
-        addToWatchlistButton = new Button("Add to Watchlist");
-        openWatchlistButton = new Button("Open Watchlist");
-        randomTitleButton = new Button("Random Title");
+        searchButton = new Button("Поиск");
+        addToWatchlistButton = new Button("Добавить в watchlist");
+        openWatchlistButton = new Button("Откыть Watchlist");
+        randomTitleButton = new Button("Выбрать рандомный тайтл");
 
         listView = new ListView<>();
         detailsArea = new TextArea();

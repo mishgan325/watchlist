@@ -13,4 +13,5 @@ module ru.mishgan325.watchlist {
     exports ru.mishgan325.watchlist.utils;
 
     opens ru.mishgan325.watchlist.entities to com.google.gson;
+    opens ru.mishgan325.watchlist.utils to com.google.gson;
 }

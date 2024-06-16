@@ -5,13 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import ru.mishgan325.watchlist.entities.Title;
+import ru.mishgan325.watchlist.entities.WatchlistData;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonHandler {
+public class JsonHelper {
 
     private static final String WATCHLIST_FILE = "watchlist.json";
 
@@ -25,20 +26,20 @@ public class JsonHandler {
         }
     }
 
-    public static List<Title> loadWatchlist() {
+    public static WatchlistData loadWatchlist() {
         File file = new File(WATCHLIST_FILE);
         if (!file.exists() || file.length() == 0) {
-            return new ArrayList<>(); // Return an empty list if the file doesn't exist or is empty
+            return new WatchlistData(); // Return an empty list if the file doesn't exist or is empty
         }
 
         Gson gson = new Gson();
-        List<Title> watchlist = new ArrayList<>();
+        WatchlistData watchlistData = new WatchlistData();
         try (Reader reader = new FileReader(WATCHLIST_FILE)) {
-            Type type = new TypeToken<List<Title>>() {}.getType();
-            watchlist = gson.fromJson(reader, type);
+            Type type = new TypeToken<WatchlistData>() {}.getType();
+            watchlistData = gson.fromJson(reader, type);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return watchlist;
+        return watchlistData;
     }
 }
